@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 1.求add
+      //   var add = (function () {// AO{counter:1}
+      //     var counter = 0;
+      //     return function () {
+      //       return (counter += 1);
+      //     };
+      //   })();
+
+      //  var res =  add(); // AO{counter:0} // counter = counter +1   counter = 0 +1  ---> AO{counter:1}
+      //  console.log(res)
+      //  res =   add();  //  AO{counter:1} // counter = counter +1   counter = 1 +1  -=--> AO{counter:2}
+      //  console.log(res)
+
+      //   // 2.求i输出
+      //   for (var i = 0; i < 3; i++) {
+      //     // 执行3次
+      //     setTimeout(function () {
+      //       console.log(i); //3 3 3 // for 执行完毕后  还没执行
+      //     }, 0);
+      //     console.log(i);  // 0 1 2
+      //   }
+      //   // for  执行完毕后 i 是 3
+
+      // 3.求输出结果
+      //   for (let i = 0; i < 5; i++) {
+      //       // let  声明的变量 没有 变量提升过程，没有作用域，叫做块级域
+      //     setTimeout(function () {
+      //       console.log("delayer:" + i);  // 0 1 2 3 4
+      //     }, 0);
+      //   }
+
+      //       // 4.求a.getAddNum()的输出结果
+      //   (function(window) {
+      //       var num = 1;
+      //       var e = {};
+      //       function add(num) {
+      //           return num++; //  先赋值后运算
+      //       }
+      //       e.getAddNum = function () {
+      //           return add(num);  // add(1)
+      //       }
+      //       window.a = e
+      //   } )(window)
+
+      //   console.log(a.getAddNum());  // 1
+      //   console.log(a.getAddNum());   // 1
+
+      // 5.求a.getAddNum()的输出结果
+      //   ( function (window) {
+      //     var num = 1;
+      //     var e = {};
+      //     function add(num) {
+      //       return num++;
+      //     }
+      //     e.getAddNum = function () {
+      //       return add();
+      //     };
+      //     window.a = e;
+      //   })(window);
+
+      //   console.log(a.getAddNum());
+      //   console.log(a.getAddNum());
+
+      // 6.求result()输出结果
+      //   function f1() {
+      //     var n = 999;
+      //     nAdd = function () {
+      //       n += 1;// n = 999+1  n = 1000
+      //     };
+      //     function f2() {
+      //       alert(n);
+      //     }
+      //     return f2;
+      //   }
+      //   var result = f1();  // AO{n:999} 保留
+      //   result();  //  999
+      //   nAdd();   // AO:{n:1000}
+      //   result();  // 1000
+
+      // 7.求fa() fb()  fc()它们的输出结果
+      //   function f1(num) {
+      //     function f2() {
+      //       alert("数字:" + num);
+      //     }
+      //     return f2;
+      //   }
+      //   var fa = f1(10);  // AO{num:10}
+      //   var fb = f1(20);  //  AO1{num:20}
+      //   var fc = f1(30);   // AO2{num:30}
+      //   fa();  // 10
+      //   fb(); //  20
+      //   fc();  //  30
+
+      //   // 8.求console.log()的输出结果
+      //   var a = 9;
+      //   function fn() {
+      //     a = 0;   // 修改全局中a
+      //     return function (b) {
+      //       return b + a++;
+      //     };
+      //   }
+      //   // GO{a:9,fn:function}
+      //   var f = fn();   // AO{}    GO{a:0,fn:function}
+      //   console.log(f(5));  // 5+0 a = 1 // GO{a:1,fn:function}
+      //   console.log(fn()(5)); // A01{}  5+0  GO{a:0,fn:function}-->Go{a:1,fn:Function}
+      //   console.log(f(5));  // 5+1      Go{a:2,fn: function }
+      //   console.log(a); // 2
+
+      //   // 总结：考察综合能力；闭包 ao go 以及运算能力,自增  return
+
+      //   function fn(i) {
+
+      //     return function (n) {
+      //       console.log(n + i++);
+      //     };
+      //   }
+      //   var f = fn(10); // ao{i:10 f:function}
+      //   f(20);  // 10+20   ao{i:11}
+      //   fn(20)(40);   // AO{i:20}   // 20+40 AO{i:21}
+      //   fn(30)(50);  //  ao1{i:30}  //  30+50  ao1{i:31}
+      //   f(30);      //  ao{i:11}  // 30 + 11 ao{i:12}
+
+      // 10.问:三行a,b,c的输出分别是什么
+      function fun(n, o) {
+        console.log(n, "------------");
+        console.log(o);
+        return {
+          fun: function (m) {
+            console.log(n, "++++++++++++");
+            return fun(m, n); // fun{2,1}
+          },
+        };
+      }
+      // fun 中 获取的n 就是第一次 fun(0)
+      // 为什么 ao 中n 都是 0 ? 形参赋值改变的是哪个n
+
+      //   var a = fun(0);  // AO{n:0,o:undefined}  // undefned
+      //   a.fun(1); // m = 1  n  = 0 --> AO{n:,o:0}   // 0     fun(1,0)
+      //   a.fun(2); // m = 2  n = 1--->。   AO{n:0,o:1} // 1    fun(2,)
+      //   a.fun(3);
+
+      var b = fun(0);
+      b.fun(1);
+      b.fun(2);
+      b.fun(3);
+      var c = fun(0);
+      c.fun(1);
+      c.fun(2);
+      c.fun(3);
+      // 综合题
+    </script>
+  </body>
+</html>
